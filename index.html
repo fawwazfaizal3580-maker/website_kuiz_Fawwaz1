@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesejahteraan Diri dan Gaya Hidup Sihat - Kuiz Interaktif</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0fdf4;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="bg-emerald-600 text-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid font-bold text-2xl fa-apple-whole text-yellow-300"></i>
+                <h1 class="text-lg md:text-xl font-bold tracking-wide">Gaya Hidup Sihat</h1>
+            </div>
+            <div id="user-display" class="hidden text-sm md:text-base font-medium bg-emerald-700 py-1 px-3 rounded-full flex items-center gap-2">
+                <i class="fa-solid fa-user-graduate"></i>
+                <span id="player-name-tag"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-3xl mx-auto w-full p-4 md:p-6 flex-grow flex flex-col justify-center">
+
+        <!-- SCREEN 1: Muka Depan / Welcome Screen -->
+        <section id="screen-welcome" class="bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-emerald-100 text-center fade-in">
+            <div class="inline-block p-4 bg-emerald-100 text-emerald-600 rounded-full mb-4">
+                <i class="fa-solid fa-utensils text-4xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-emerald-800 mb-2">
+                Kesejahteraan Diri & Gaya Hidup Sihat
+            </h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base">
+                Terokai ilmu pemakanan sihat, Piramid Makanan Malaysia, pembacaan label makanan, dan diet seimbang menerusi kuiz interaktif ini!
+            </p>
+
+            <form id="form-start" class="max-w-md mx-auto space-y-4 text-left">
+                <div>
+                    <label for="username" class="block text-sm font-semibold text-slate-700 mb-1">
+                        Nama Murid / Peserta:
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" id="username" required placeholder="Masukkan nama anda..." 
+                            class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 text-lg">
+                    <span>Mula Kuiz</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 flex justify-center items-center gap-6 text-xs text-slate-500">
+                <span><i class="fa-solid fa-list-check text-emerald-500 mr-1"></i> 8 Soalan Interaktif</span>
+                <span><i class="fa-solid fa-clock text-emerald-500 mr-1"></i> Tiada Had Masa Ketat</span>
+                <span><i class="fa-solid fa-award text-emerald-500 mr-1"></i> Analisis Keputusan</span>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: Quiz Engine -->
+        <section id="screen-quiz" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-emerald-100 fade-in">
+            <!-- Progress & Stats Header -->
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Kemajuan</span>
+                    <h3 id="question-number" class="text-sm font-bold text-slate-700">Soalan 1 daripada 8</h3>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Skor Semasa</span>
+                        <p id="current-score" class="text-sm font-bold text-slate-800">0 Poin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 rounded-full h-2.5 mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 12.5%"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="mb-6">
+                <span id="question-category" class="inline-block bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-md mb-2">
+                    Kategori: Konsep Asas
+                </span>
+                <h2 id="question-text" class="text-lg md:text-xl font-bold text-slate-800 leading-snug">
+                    Teks soalan akan terpapar di sini...
+                </h2>
+                <!-- Label Image / Context Container (If Any) -->
+                <div id="question-media" class="hidden mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <!-- Media content injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Answer Options Form/Container -->
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options injected dynamically -->
+            </div>
+
+            <!-- Fill in the blank input container (If applicable) -->
+            <div id="fill-blank-container" class="hidden mb-6">
+                <input type="text" id="blank-answer" placeholder="Taip jawapan anda di sini..." class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                <button id="btn-submit-blank" class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition">Hantar Jawapan</button>
+            </div>
+
+            <!-- Instant Educational Feedback Area -->
+            <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 fade-in">
+                <div class="flex items-start gap-3">
+                    <div id="feedback-icon" class="text-2xl mt-0.5"></div>
+                    <div>
+                        <h4 id="feedback-title" class="font-bold text-base mb-1"></h4>
+                        <p id="feedback-text" class="text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Button -->
+            <button id="btn-next" class="hidden w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                <span>Soalan Seterusnya</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 3: Results & Analysis -->
+        <section id="screen-result" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-10 border border-emerald-100 fade-in">
+            <div class="text-center mb-8">
+                <div id="result-badge" class="inline-block p-4 bg-yellow-100 text-yellow-600 rounded-full mb-3">
+                    <i class="fa-solid fa-trophy text-4xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">Tahniah, <span id="result-name" class="text-emerald-600"></span>!</h2>
+                <p class="text-slate-600 text-sm md:text-base mt-1">Anda telah melengkapkan Kuiz Gaya Hidup Sihat.</p>
+            </div>
+
+            <!-- Score Summary Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 text-center">
+                    <span class="text-xs text-emerald-600 font-bold uppercase">Skor Keseluruhan</span>
+                    <p id="final-score" class="text-3xl font-extrabold text-emerald-700 mt-1">0 / 8</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-center">
+                    <span class="text-xs text-blue-600 font-bold uppercase">Peratusan</span>
+                    <p id="final-percentage" class="text-3xl font-extrabold text-blue-700 mt-1">0%</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 text-center">
+                    <span class="text-xs text-purple-600 font-bold uppercase">Tahap Pencapaian</span>
+                    <p id="final-status" class="text-lg font-bold text-purple-700 mt-2">Cemerlang</p>
+                </div>
+            </div>
+
+            <!-- Performance Analysis -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-emerald-600"></i>
+                    Analisis & Cadangan Penambahbaikan
+                </h3>
+                <p id="analysis-text" class="text-sm text-slate-600 leading-relaxed">
+                    Memuatkan analisis pencapaian anda...
+                </p>
+            </div>
+
+            <!-- Summary Healthy Tips -->
+            <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 mb-8">
+                <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-600"></i>
+                    Ringkasan Petua Pemakanan Sihat (Suku Suku Separuh)
+                </h3>
+                <ul class="text-xs md:text-sm text-amber-800 space-y-2 list-disc list-inside">
+                    <li><b>Suku Pertama:</b> Karbohidrat (Nasi, roti, bijirin lengkap) untuk tenaga.</li>
+                    <li><b>Suku Kedua:</b> Protein (Ikan, ayam, kekacang) untuk pembinaan tisu dan otot.</li>
+                    <li><b>Separuh Pinggan:</b> Buah-buahan & Sayur-sayuran untuk serat, vitamin, dan mineral.</li>
+                    <li><b>Minum Air Masak:</b> Sekurang-kurangnya 6-8 gelas sehari dan hadkan minuman bergula.</li>
+                    <li><b>Semak Label:</b> Pilih produk yang kurang kandungan garam (natrium) dan gula tersembunyi.</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="btn-restart" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Cuba Lagi</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500">
+        <p>© 2026 Modul Kuiz Digital Interaktif: Kesejahteraan Diri dan Gaya Hidup Sihat.</p>
+    </footer>
+
+    <!-- Quiz Logic JavaScript -->
+    <script>
+        // Quiz Questions Data (Matching all required topics)
+        const quizData = [
+            {
+                id: 1,
+                category: "Konsep Asas & Diet Seimbang",
+                type: "mcq",
+                question: "Apakah konsep pembahagian pinggan sihat yang disarankan oleh Kementerian Kesihatan Malaysia (KKM)?",
+                options: [
+                    "Suku Suku Separuh (Karbohidrat, Protein, Buah & Sayur)",
+                    "Separuh Separuh (Karbohidrat dan Protein sahaja)",
+                    "Suku Separuh Suku (Protein, Karbohidrat, Lemak)",
+                    "Semua bahagian diisi dengan Karbohidrat"
+                ],
+                correct: 0,
+                explanation: "Konsep 'Suku Suku Separuh' menetapkan Suku Karbohidrat, Suku Protein, dan Separuh Pinggan terdiri daripada Buah-buahan & Sayur-sayuran."
+            },
+            {
+                id: 2,
+                category: "Gula, Garam & Lemak",
+                type: "mcq",
+                question: "Berapakah jumlah pengambilan gula harian yang disarankan untuk orang dewasa (had selamat)?",
+                options: [
+                    "Lebih daripada 15 sudu teh sehari",
+                    "Tidak lebih 10% daripada jumlah tenaga harian (kira-kira 50 gram / 10 sudu teh)",
+                    "Tiada had sekiranya kita aktif bersukan",
+                    "Sekurang-kurangnya 100 gram sehari"
+                ],
+                correct: 1,
+                explanation: "Pengambilan gula harian hendaklah disekat tidak melebihi 10% daripada jumlah tenaga harian (~50g/10 sudu teh) untuk mengelakkan risiko obesiti dan kencing manis."
+            },
+            {
+                id: 3,
+                category: "Pengambilan Air",
+                type: "tf",
+                question: "Benar atau Salah: Minuman bergula dan minuman bersoda boleh menggantikan sepenuhnya keperluan air masak harian badan kita.",
+                options: ["Benar", "Salah"],
+                correct: 1,
+                explanation: "Salah! Badan memerlukan 6-8 gelas air masak bersih setiap hari. Minuman bergula mengandungi kalori kosong dan boleh meningkatkan risiko penyakit kronik."
+            },
+            {
+                id: 4,
+                category: "Baca Label Makanan",
+                type: "mcq",
+                question: "Semasa membaca label maklumat pemakanan, apakah komponen yang perlu dikesan dan dihadkan untuk mencegah tekanan darah tinggi?",
+                options: [
+                    "Kalsium",
+                    "Natrium (Garam)",
+                    "Vitamin C",
+                    "Serat Diet"
+                ],
+                correct: 1,
+                explanation: "Pengambilan Natrium (Garam) yang berlebihan berkait rapat dengan peningkatan risiko penyakit tekanan darah tinggi (hipertensi)."
+            },
+            {
+                id: 5,
+                category: "Makanan Diproses vs Makanan Segar",
+                type: "mcq",
+                question: "Mengapakah makanan segar (seperti buah-buahan dan sayuran segar) lebih baik berbanding makanan berproses (seperti sosej dan makanan dalam tin)?",
+                options: [
+                    "Makanan berproses mengandungi lebih banyak serat semulajadi",
+                    "Makanan segar bebas daripada bahan pengawet tambahan, tinggi serat dan nutrien asli",
+                    "Makanan berproses tidak mengandungi sebarang garam atau gula",
+                    "Makanan segar bertahan lebih lama berbanding makanan berproses"
+                ],
+                correct: 1,
+                explanation: "Makanan segar kaya dengan vitamin, mineral, dan serat semulajadi tanpa penambahan pengawet, perasa tiruan, serta natrium tinggi yang kerap wujud dalam makanan terproses."
+            },
+            {
+                id: 6,
+                category: "Kumpulan Makanan & Fungsi",
+                type: "fill",
+                question: "Isi tempat kosong: Kumpulan makanan seperti ikan, ayam, daging, dan kekacang berfungsi terutamanya untuk pembinaan __________ dan pembaikan tisu badan.",
+                correctAnswer: "otot",
+                explanation: "Protein (daripada sumber ikan, ayam, telur, kekacang) amat penting untuk pertumbuhan, pembaikan tisu, dan pembinaan otot badan."
+            },
+            {
+                id: 7,
+                category: "Tabiat Pemakanan & Mitos",
+                type: "tf",
+                question: "Benar atau Salah: Melangkau (skip) sarapan pagi ialah cara yang sihat dan berkesan untuk menurunkan berat badan.",
+                options: ["Benar", "Salah"],
+                correct: 1,
+                explanation: "Salah! Sarapan pagi membekalkan tenaga penting untuk memulakan hari dan metabolisme badan. Melangkau sarapan kerap menyebabkan rasa terlalu lapar dan makan berlebihan kemudiannya."
+            },
+            {
+                id: 8,
+                category: "Saiz Hidangan Harian",
+                type: "mcq",
+                question: "Berdasarkan Piramid Makanan Malaysia 2020, kumpulan makanan manakah yang membentuk dasar (perlu dimakan paling banyak/cukup)?",
+                options: [
+                    "Lemak, Minyak, Gula dan Garam",
+                    "Buah-buahan dan Sayur-sayuran",
+                    "Susu dan Produk Tenusu",
+                    "Daging dan Ayam"
+                ],
+                correct: 1,
+                explanation: "Dalam Piramid Makanan Malaysia 2020, aras dasar (bawah sekali) diisi oleh Sayur-sayuran dan Buah-buahan mengikut saranan pengambilan harian terbanyak."
+            }
+        ];
+
+        // State variables
+        let userName = "";
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        // DOM Elements
+        const screenWelcome = document.getElementById("screen-welcome");
+        const screenQuiz = document.getElementById("screen-quiz");
+        const screenResult = document.getElementById("screen-result");
+
+        const formStart = document.getElementById("form-start");
+        const inputUsername = document.getElementById("username");
+        const userDisplay = document.getElementById("user-display");
+        const playerNameTag = document.getElementById("player-name-tag");
+
+        const questionCategory = document.getElementById("question-category");
+        const questionNumber = document.getElementById("question-number");
+        const currentScore = document.getElementById("current-score");
+        const progressBar = document.getElementById("progress-bar");
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const fillBlankContainer = document.getElementById("fill-blank-container");
+        const blankAnswerInput = document.getElementById("blank-answer");
+        const btnSubmitBlank = document.getElementById("btn-submit-blank");
+
+        const feedbackBox = document.getElementById("feedback-box");
+        const feedbackIcon = document.getElementById("feedback-icon");
+        const feedbackTitle = document.getElementById("feedback-title");
+        const feedbackText = document.getElementById("feedback-text");
+        const btnNext = document.getElementById("btn-next");
+
+        const resultName = document.getElementById("result-name");
+        const finalScore = document.getElementById("final-score");
+        const finalPercentage = document.getElementById("final-percentage");
+        const finalStatus = document.getElementById("final-status");
+        const analysisText = document.getElementById("analysis-text");
+        const btnRestart = document.getElementById("btn-restart");
+
+        // Event Listeners
+        formStart.addEventListener("submit", (e) => {
+            e.preventDefault();
+            userName = inputUsername.value.trim();
+            if (userName) {
+                playerNameTag.innerText = userName;
+                userDisplay.classList.remove("hidden");
+                screenWelcome.classList.add("hidden");
+                screenQuiz.classList.remove("hidden");
+                startQuiz();
+            }
+        });
+
+        btnNext.addEventListener("click", () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        btnSubmitBlank.addEventListener("click", () => {
+            const ans = blankAnswerInput.value.trim().toLowerCase();
+            if (ans === "") return;
+            
+            const currentQ = quizData[currentQuestionIndex];
+            const isCorrect = ans.includes(currentQ.correctAnswer.toLowerCase());
+            handleAnswer(isCorrect, currentQ.correctAnswer);
+        });
+
+        btnRestart.addEventListener("click", () => {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            screenResult.classList.add("hidden");
+            screenQuiz.classList.remove("hidden");
+            startQuiz();
+        });
+
+        // Functions
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset UI State
+            feedbackBox.classList.add("hidden");
+            btnNext.classList.add("hidden");
+            optionsContainer.innerHTML = "";
+            blankAnswerInput.value = "";
+            fillBlankContainer.classList.add("hidden");
+
+            const q = quizData[currentQuestionIndex];
+
+            // Set Header Details
+            questionCategory.innerText = `Kategori: ${q.category}`;
+            questionNumber.innerText = `Soalan ${currentQuestionIndex + 1} daripada ${quizData.length}`;
+            currentScore.innerText = `${score} Poin`;
+            
+            const progressPercent = ((currentQuestionIndex + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            questionText.innerText = q.question;
+
+            // Render based on Question Type
+            if (q.type === "mcq" || q.type === "tf") {
+                optionsContainer.classList.remove("hidden");
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement("button");
+                    btn.className = "w-full text-left p-4 border border-slate-200 rounded-xl hover:bg-emerald-50 hover:border-emerald-300 transition flex items-center justify-between font-medium text-slate-700 option-btn";
+                    btn.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle text-slate-300"></i>`;
+                    btn.addEventListener("click", () => selectOption(idx));
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (q.type === "fill") {
+                fillBlankContainer.classList.remove("hidden");
+            }
+        }
+
+        function selectOption(selectedIndex) {
+            const q = quizData[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.correct);
+
+            // Disable all option buttons
+            const buttons = optionsContainer.querySelectorAll(".option-btn");
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.correct) {
+                    btn.classList.remove("border-slate-200");
+                    btn.classList.add("bg-emerald-100", "border-emerald-500", "text-emerald-900");
+                    btn.querySelector("i").className = "fa-solid fa-circle-check text-emerald-600";
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.remove("border-slate-200");
+                    btn.classList.add("bg-red-100", "border-red-400", "text-red-900");
+                    btn.querySelector("i").className = "fa-solid fa-circle-xmark text-red-500";
+                }
+            });
+
+            handleAnswer(isCorrect);
+        }
+
+        function handleAnswer(isCorrect, extraInfo = "") {
+            const q = quizData[currentQuestionIndex];
+
+            if (isCorrect) {
+                score++;
+                currentScore.innerText = `${score} Poin`;
+                feedbackBox.className = "p-4 rounded-xl mb-6 fade-in bg-emerald-50 border border-emerald-200 text-emerald-900";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+                feedbackTitle.innerText = "Tahniah, Jawapan Betul! 🎉";
+            } else {
+                feedbackBox.className = "p-4 rounded-xl mb-6 fade-in bg-red-50 border border-red-200 text-red-900";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-500"></i>`;
+                feedbackTitle.innerText = "Kurang Tepat... 💡";
+            }
+
+            feedbackText.innerText = q.explanation;
+            feedbackBox.classList.remove("hidden");
+            btnNext.classList.remove("hidden");
+
+            // Record user response
+            userAnswers.push({
+                questionId: q.id,
+                category: q.category,
+                isCorrect: isCorrect
+            });
+        }
+
+        function showResults() {
+            screenQuiz.classList.add("hidden");
+            screenResult.classList.remove("hidden");
+
+            resultName.innerText = userName;
+            finalScore.innerText = `${score} / ${quizData.length}`;
+
+            const percentage = Math.round((score / quizData.length) * 100);
+            finalPercentage.innerText = `${percentage}%`;
+
+            // Status & Feedback Analysis
+            let statusText = "";
+            let statusColorClass = "";
+            let analysisMsg = "";
+
+            if (percentage >= 80) {
+                statusText = "Sangat Cemerlang! 🌟";
+                analysisMsg = `Tahniah ${userName}! Anda mempunyai kefahaman yang amat tinggi mengenai gaya hidup sihat, kesedaran nutrisi, dan diet seimbang. Kekalkan amalan ini dalam kehidupan harian anda!`;
+            } else if (percentage >= 50) {
+                statusText = "Baik / Sederhana 👍";
+                analysisMsg = `Syabas ${userName}! Pengetahuan anda berada pada tahap yang baik. Namun, sila semak semula topik seperti label makanan atau pengambilan gula/garam untuk pemahaman yang lebih mantap.`;
+            } else {
+                statusText = "Perlu Perbaikan 📚";
+                analysisMsg = `Jangan putus asa ${userName}. Ini peluang yang baik untuk belajar! Ambil masa untuk membaca semula nota Piramid Makanan Malaysia dan amalan pembahagian Suku Suku Separuh.`;
+            }
+
+            finalStatus.innerText = statusText;
+            analysisText.innerText = analysisMsg;
+        }
+    </script>
+</body>
+</html>
+```eof
+
+### Ringkasan Ciri-Ciri Utama Kuiz:
+1. **Muka Depan**: Tajuk menarik berserta borang input nama murid untuk pengalaman yang diperibadikan.
+2. **Kandungan Merangkumi 8 Topik Utama**: Piramid Makanan Malaysia (2020), konsep Suku Suku Separuh, fungsi protein, kawalan gula/garam/natrium, pemakanan terproses vs segar, kepentingan air masak, dan mitos sarapan pagi.
+3. **Format Soalan Pelbagai**: Pilihan Jawapan Multiple Choice (MCQ), Benar/Salah (True/False), dan Isi Tempat Kosong.
+4. **Pendidikan & Maklum Balas Serta-merta**: Penjelasan ringkas dipaparkan serta-merta sejurus jawapan dipilih untuk mengukuhkan kefahaman.
+5. **Analisis Akhir**: Paparan peratusan, tahap pencapaian, cadangan penambahbaikan, dan ringkasan petua berguna pemakanan sihat.
